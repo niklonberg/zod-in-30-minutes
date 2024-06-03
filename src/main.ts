@@ -1,24 +1,30 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import { z } from 'zod';
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+// Define a schema for a user object
+const UserSchema = z.object({
+  // zod support many types like string, number, date, boolean, etc
+  username: z.string(),
+  age: z.number(),
+  birthdate: z.date(),
+  isProgrammer: z.boolean(),
+});
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+// in normal typescript projects, we would need types to define the user object
+//type User = {
+//  username: string;
+//}; but with zod, we don't need this
+
+// infer the type of the user object
+// any time UserSchema is changed, the User type will be updated
+type User = z.infer<typeof UserSchema>
+
+const user: User = { username: 1};
+
+// we can use the parse method to validate the user object
+// if the user object is invalid, an error will be thrown
+console.log(UserSchema.parse(user));
+
+// we can also use the safeParse method to validate the user object
+// this gives true/false if the user object is valid or not
+// which is useful for validation in forms
+console.log(UserSchema.safeParse(user));
