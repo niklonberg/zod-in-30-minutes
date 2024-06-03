@@ -151,7 +151,7 @@ const userFour: UserFour = {
   id: { status: 'success', data: '123' }
 }
 
-console.log(UserSchemaFour.safeParse(userFour)); 
+// console.log(UserSchemaFour.safeParse(userFour)); 
 
 /*********************************  Version 5  ******************************/ 
 
@@ -167,4 +167,20 @@ const userFive = new Map([
   ["id-jack", {name: "jack"}],
 ])
 
-console.log(UserMap.parse(userFive)); 
+// console.log(UserMap.parse(userFive)); 
+
+/*********************************  Version 6  ******************************/ 
+
+const UserSetSchema = z.set(z.number()); 
+
+const userSix = new Set([1, 1, 1, 2])
+
+console.log(UserSetSchema.parse(userSix));
+
+/*********************************  Version 7  ******************************/
+
+const PromiseSchema = z.promise(z.string()); // Define a schema for a promise that resolves to a string
+
+const p = Promise.resolve('hello'); // Create a promise that resolves to 'hello'
+
+console.log(PromiseSchema.parse(p)); // Parse the promise using the schema
