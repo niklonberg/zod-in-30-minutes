@@ -184,3 +184,16 @@ const PromiseSchema = z.promise(z.string()); // Define a schema for a promise th
 const p = Promise.resolve('hello'); // Create a promise that resolves to 'hello'
 
 console.log(PromiseSchema.parse(p)); // Parse the promise using the schema
+
+/*********************************  Version 8  ******************************/
+
+// advanced validation
+const EmailSchema = z
+  .string()
+  .email()
+  .refine((val) => val.endsWith('@myuniquedomain.com'), {
+    message: 'Email must end with @myuniquedomain.com',
+  });
+
+const email = "test@myuniquedomain.com"
+console.log(EmailSchema.safeParse(email)); // logs { success: true, data: 'test@myuniquedomain.com'}
