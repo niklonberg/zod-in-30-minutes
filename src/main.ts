@@ -152,3 +152,19 @@ const userFour: UserFour = {
 }
 
 console.log(UserSchemaFour.safeParse(userFour)); 
+
+/*********************************  Version 5  ******************************/ 
+
+const UserRecord = z.record(z.string()); // Define a schema for a record with string keys and string values
+const UserRecordTwo = z.record(z.string(), z.number()); // Define a schema for a record with string keys and number values
+
+// consider using maps instead of records
+// maps are more flexible and have better performance
+const UserMap = z.map(z.string(), z.object({name: z.string()})); // Define a schema for a map with string keys and object values
+
+const userFive = new Map([
+  ["id-john", {name: "John"}],
+  ["id-jack", {name: "jack"}],
+])
+
+console.log(UserMap.parse(userFive)); 
