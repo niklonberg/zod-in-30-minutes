@@ -197,3 +197,27 @@ const EmailSchema = z
 
 const email = "test@myuniquedomain.com"
 console.log(EmailSchema.safeParse(email)); // logs { success: true, data: 'test@myuniquedomain.com'}
+
+/*********************************  Version 9  ******************************/
+import { fromZodError } from 'zod-validation-error'
+// error handling without zod-validation-error is clunky
+
+const UserSchema9 = z.object({
+  username: z.string().min(3, 'Username must be at least 3 characters long'),  // we can also add custom error messages
+  coords: z.tuple([z.string(), z.date()]).rest(z.number()), 
+}).strict(); 
+
+type User9 = z.infer<typeof UserSchema9>
+
+const user9: User9 = { 
+  username: 'JD', 
+  coords: ['test', new Date(), 1, 2, 3],
+}
+
+const results = UserSchema9.safeParse(user9); 
+
+if (results.success) {
+  console.log(results.data);
+} else { 
+  console.log(fromZodError(results.error)); // logs ZodValidationError: Validation error: Username must be at least 3 characters long
+}
