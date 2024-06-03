@@ -107,9 +107,12 @@ const userTwo: UserTwo = {
 /*********************************  Version 3  ******************************/ 
 
 const UserSchemaThree = z.object({
+  id: z.union([z.string(), z.number()]), // we can also use unions. Here we are saying that id can be a string like a uuid or a number
+  //id: z.string().or(z.number()), // we can also use .or() to define unions
   username: z.string(), 
   friends: z.array(z.string()).nonempty(), // we can also use arrays. Here we are saying that friends is an array of strings, and it cannot be empty
   //.min/.max/.length can also be used to add constraints to the array
+  coords: z.tuple([z.number(), z.number(), z.number().gt(4).int()]), // we can also use tuples. Here we are saying that coords is a tuple of three numbers
 })
 //.passthrough(); // we can use .passthrough() to allow additional fields
 .strict() // is also available which will throw an error if there are additional fields
@@ -117,9 +120,11 @@ const UserSchemaThree = z.object({
 type UserThree = z.infer<typeof UserSchemaThree>
 
 const userThree: UserThree = {
+  id: '123',
   username: 'JDoe', 
   friends: ['Jane', 'Jack'],
-  //age: 30,
+  coords: [1, 2, 5],
+  //age: 30, -- this will throw an error because age is not part of the schema, due to strict()
 };
 
 console.log(UserSchemaThree.parse(userThree)); // logs { username: 'JDoe', age: 30 }
