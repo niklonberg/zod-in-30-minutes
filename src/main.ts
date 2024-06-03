@@ -127,5 +127,28 @@ const userThree: UserThree = {
   //age: 30, -- this will throw an error because age is not part of the schema, due to strict()
 };
 
-console.log(UserSchemaThree.parse(userThree)); // logs { username: 'JDoe', age: 30 }
+// console.log(UserSchemaThree.parse(userThree)); // logs { username: 'JDoe', age: 30 }
 // without .passthrough(), the age field would be removed
+
+/*********************************  Version 4  ******************************/ 
+
+const UserSchemaFour = z.object({ // Create a new zod object schema
+  id: z.discriminatedUnion('status', [ // Define a discriminated union based on the 'status' key
+    z.object({ // Define the first possible shape of the object when status is 'success'
+      status: z.literal('success'), // 'status' must be the literal string 'success'
+      data: z.string() // If status is 'success', there must be a 'data' field of type string
+    }),
+    z.object({ // Define the second possible shape of the object when status is 'error'
+      status: z.literal('error'), // 'status' must be the literal string 'error'
+      error: z.instanceof(Error) // If status is 'error', there must be an 'error' field which is an instance of the Error class
+    })
+  ])
+}).strict(); // Ensure no additional properties are allowed outside of what is defined in the schema
+
+type UserFour = z.infer<typeof UserSchemaFour>
+
+const userFour: UserFour = {
+  id: { status: 'success', data: '123' }
+}
+
+console.log(UserSchemaFour.safeParse(userFour)); 
